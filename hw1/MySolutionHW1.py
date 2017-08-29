@@ -3,6 +3,7 @@ import tf_util
 import numpy as np
 import gym
 import load_policy
+
 # learning_rate = 
 
 # class Policies():
@@ -42,6 +43,7 @@ def Behavioral_cloning(num_running = 2, stop_iter = 200, env_name = 'Hopper-v1',
 	expert_policy = load_policy.load_policy(expert_policy_file)
 	env = gym.make(env_name)
 	training_data = get_training_data(num_running, stop_iter, expert_policy, env)
+
 
 
 

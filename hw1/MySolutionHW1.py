@@ -1,14 +1,31 @@
+#!/usr/bin/env python
+
+# import outside dependencies 
 import tensorflow as tf
-import tf_util
 import numpy as np
 import gym
+from tensorflow.contrib import keras
+from keras.models import Sequential
+from keras.layers import Dense
+
+# import self-defined modules
+import tf_util
 import load_policy
 
-# learning_rate = 
-
-# class Policies():
-# 	def __init__(self, env):
-# 		optimizer = tf.train.AdamOptimizer(learning_rate)
+# Createa CNN with the architecture [INPUT - CONV - RELU - POOL - FC]
+def cnn(batch_size = 100):
+	model = Sequential()
+	
+	model.add(Dense(batch_size, activation = 'conv', input_shape = (n_x, ))) 
+	# TODO: fix the input of activation, figure out the input shape
+	model.add(Dense(batch_size, activation = 'relu'))
+	model.add(Dense(batch_size, activation = 'pool'))
+	# TODO: figure out input of activation
+	model.add(Dense(n_y, activation = 'FC'))
+	# TODO: figure out n_y, and input of activation
+	model.compile(loss = 'msle', optimizer = 'adam', metrics = ['accuracy'])
+    # TODO: figure out the inputs of compile...
+    return model
 
 def get_training_data(num_running, stop_iter, policy_fn, env):
 	with tf.Session():
@@ -30,7 +47,7 @@ def get_training_data(num_running, stop_iter, policy_fn, env):
 				obs, reward, done, info = env.step(action)
 				reward_total += reward
 				num_iter += 1
-				env.render()
+				# env.render()
 				if num_iter >= stop_iter:
 					break
 			reward_total_list.append(reward_total)
@@ -39,10 +56,21 @@ def get_training_data(num_running, stop_iter, policy_fn, env):
 		                     'reward_total_list': np.array(reward_total_list)}
         return train_data_expert
 
-def Behavioral_cloning(num_running = 2, stop_iter = 200, env_name = 'Hopper-v1', expert_policy_file = 'experts/Hopper-v1.pkl'):
+def Behavioral_cloning(num_rollouts = 2, stop_iter = 2000, env_name = 'Hopper-v1', \
+					   expert_policy_file = 'experts/Hopper-v1.pkl', num_running = 50):
+	tf.reset_default_graph()
 	expert_policy = load_policy.load_policy(expert_policy_file)
 	env = gym.make(env_name)
-	training_data = get_training_data(num_running, stop_iter, expert_policy, env)
+	training_data = get_training_data(num_rollouts, stop_iter, expert_policy, env)
+    
+    # with tf.Session():
+    # 	tf_util.initialize()
+
+    # 	for epoch in range(num_running):
+
+Behavioral_cloning()
+
+
 
 
 
